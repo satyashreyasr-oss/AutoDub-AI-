@@ -1,0 +1,14 @@
+yt-dlp>=2024.8.6
+faster-whisper>=1.0.3
+edge-tts>=6.1.12
+pydub>=0.25.1
+librosa>=0.10.2
+numpy>=1.26
+
+# Optional: only needed for `--translator indictrans2`, which gives higher
+# quality translation specifically for Indian-language sources. The default
+# `whisper` backend needs none of these.
+# torch
+# transformers
+# sentencepiece
+# IndicTransToolkit @ git+https://github.com/VarunGumma/IndicTransToolkit.git
