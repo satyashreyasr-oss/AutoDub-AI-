@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .downloader import download_video
 from .muxer import remux_audio
+from .subtitles import write_srt
 from .synthesizer import synthesize_dubbed_audio
 from .translator import get_english_segments
 from .utils import format_duration, log, run
@@ -49,6 +50,9 @@ class DubbingPipeline:
 
         output_path = self.output_dir / f"{download.video_path.stem}_dubbed_en.mp4"
         remux_audio(download.video_path, dubbed_audio, output_path)
+
+        srt_path = output_path.with_suffix(".srt")
+        write_srt(transcription.segments, srt_path)
 
         if not self.keep_temp:
             shutil.rmtree(work_dir, ignore_errors=True)

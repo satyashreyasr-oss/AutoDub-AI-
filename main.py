@@ -22,7 +22,7 @@ def parse_args() -> argparse.Namespace:
         choices=["auto", "cpu", "cuda"],
         help="Device for Whisper inference",
     )
-    parser.add_argument(
+    parser.add_argument(    
         "--voice", default=None, help="Force a specific edge-tts voice (e.g. en-US-GuyNeural)"
     )
     parser.add_argument(

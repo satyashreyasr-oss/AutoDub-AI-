@@ -39,6 +39,11 @@ def _apply_tempo(src: Path, dst: Path, tempo: float) -> None:
     run(["ffmpeg", "-y", "-i", str(src), "-filter:a", f"atempo={tempo:.3f}", str(dst)])
 
 
+def compute_tempo(raw_duration: float, target_duration: float) -> float:
+    target_duration = max(target_duration, 0.1)
+    return max(MIN_TEMPO, min(MAX_TEMPO, raw_duration / target_duration))
+
+
 def synthesize_dubbed_audio(
     transcription: TranscriptionResult, voice: str, total_duration: float, work_dir: Path
 ) -> Path:
@@ -56,8 +61,7 @@ def synthesize_dubbed_audio(
 
         raw_audio = AudioSegment.from_file(raw_path)
         raw_duration = len(raw_audio) / 1000.0
-        target_duration = max(seg.end - seg.start, 0.1)
-        tempo = max(MIN_TEMPO, min(MAX_TEMPO, raw_duration / target_duration))
+        tempo = compute_tempo(raw_duration, seg.end - seg.start)
 
         if abs(tempo - 1.0) > TEMPO_TOLERANCE:
             tuned_path = work_dir / f"seg_{i:04d}_tuned.mp3"

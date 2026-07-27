@@ -1,10 +1,26 @@
 import subprocess
 import time
+from typing import Callable
+
+_subscribers: list[Callable[[str], None]] = []
+
+
+def subscribe(callback: Callable[[str], None]) -> Callable[[], None]:
+    """Register a callback to receive every future log line as it's emitted.
+
+    Returns an unsubscribe function. Used by the UI to stream pipeline
+    progress without every module having to know about it.
+    """
+    _subscribers.append(callback)
+    return lambda: _subscribers.remove(callback)
 
 
 def log(step: str, message: str) -> None:
     timestamp = time.strftime("%H:%M:%S")
-    print(f"[{timestamp}] [{step}] {message}", flush=True)
+    line = f"[{timestamp}] [{step}] {message}"
+    print(line, flush=True)
+    for callback in list(_subscribers):
+        callback(line)
 
 
 def run(cmd: list[str]) -> None:

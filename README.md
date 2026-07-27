@@ -20,6 +20,24 @@ used automatically if present; otherwise everything falls back to CPU.
 python main.py "https://www.youtube.com/watch?v=XXXXXXXXXXX"
 ```
 
+### Web UI
+
+Two equivalent local UIs are available — pick one:
+
+```
+pip install -r requirements-ui.txt
+
+# Gradio
+python app.py                                # http://127.0.0.1:7860
+
+# Streamlit
+streamlit run streamlit_app.py                # http://127.0.0.1:8501
+```
+
+Both let you paste a URL, set options, watch live progress, and
+preview/download the dubbed video and `.srt`. Each runs the pipeline in a
+background thread and streams the same log lines the CLI prints.
+
 Options:
 
 | Flag | Default | Meaning |
@@ -50,7 +68,9 @@ YouTube URL
                           overlaid onto a silent track at their original offsets
   -> muxer.py            ffmpeg swaps the audio track onto the source video with
                           `-c:v copy` (no video re-encode)
-  -> <name>_dubbed_en.mp4
+  -> subtitles.py         writes the English segments out as an .srt alongside
+                          the dubbed video
+  -> <name>_dubbed_en.mp4, <name>_dubbed_en.srt
 ```
 
 ### Key design decisions
@@ -84,6 +104,17 @@ Multi-speaker diarization (`pyannote.audio`) and per-speaker voice cloning
 current single-voice design is the natural place to plug them in:
 `translator.py`'s segments would carry a speaker label, and `voice_picker.py`
 would resolve a (cloned) voice per speaker instead of once per video.
+
+## Testing
+
+```
+pip install -r requirements-dev.txt
+pytest
+```
+
+Covers the pure-logic pieces: tempo-clamp math in `synthesizer.py`, SRT
+formatting in `subtitles.py`, and the whisper/indictrans2 backend dispatch
+in `translator.py`.
 
 ## Known limitations
 
