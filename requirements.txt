@@ -4,6 +4,7 @@ edge-tts>=6.1.12
 pydub>=0.25.1
 librosa>=0.10.2
 numpy>=1.26
+streamlit>=1.38
 
 # Optional: only needed for `--translator indictrans2`, which gives higher
 # quality translation specifically for Indian-language sources. The default

@@ -38,6 +38,31 @@ Both let you paste a URL, set options, watch live progress, and
 preview/download the dubbed video and `.srt`. Each runs the pipeline in a
 background thread and streams the same log lines the CLI prints.
 
+### Deploying `streamlit_app.py` to Streamlit Community Cloud
+
+1. Push this repo to GitHub (already set up if you're reading this from a
+   clone with `origin` configured).
+2. Go to [share.streamlit.io](https://share.streamlit.io), sign in, and
+   click **New app**.
+3. Pick this repo/branch, set **Main file path** to `streamlit_app.py`,
+   and deploy. Community Cloud auto-installs `requirements.txt` (includes
+   `streamlit`) and `packages.txt` (installs `ffmpeg` via apt) — both are
+   already in the repo root, no extra config needed.
+
+Two real constraints on the free tier, not just theoretical ones:
+
+- **Resources.** Community Cloud gives you ~1 CPU core and ~1GB RAM, no
+  GPU. Stick to the `tiny`/`base` Whisper models (the UI defaults to
+  `tiny`) — `medium`/`large-v3` will very likely get OOM-killed. The
+  `indictrans2` translator backend (a 1B-parameter model) isn't installed
+  here at all and will fall back to Whisper's built-in translation.
+- **YouTube blocking cloud IPs.** `yt-dlp` downloads frequently fail from
+  shared/datacenter IP ranges (AWS, GCP, and Streamlit Cloud's own infra)
+  with a "Sign in to confirm you're not a bot" error — this is a YouTube-side
+  block, not a bug in this code. If you hit it, the standard yt-dlp fix is
+  supplying a `cookies.txt` exported from a logged-in browser session; this
+  repo doesn't wire that up yet. Say the word if you want it added.
+
 Options:
 
 | Flag | Default | Meaning |

@@ -14,9 +14,15 @@ TRANSLATORS = ["whisper", "indictrans2"]
 st.set_page_config(page_title="AutoDub", layout="wide")
 st.title("AutoDub — YouTube to English Dub")
 
+st.caption(
+    "Running on a resource-limited host (e.g. Streamlit Community Cloud)? "
+    "Stick to `tiny`/`base` Whisper models — `medium`/`large-v3` will likely "
+    "exceed the free tier's ~1GB RAM."
+)
+
 with st.sidebar:
     url = st.text_input("YouTube URL", placeholder="https://www.youtube.com/watch?v=...")
-    whisper_model = st.selectbox("Whisper model", WHISPER_MODELS, index=WHISPER_MODELS.index("small"))
+    whisper_model = st.selectbox("Whisper model", WHISPER_MODELS, index=WHISPER_MODELS.index("tiny"))
     device = st.selectbox("Device", DEVICES, index=0)
     translator = st.selectbox("Translator backend", TRANSLATORS, index=0)
     voice = st.text_input("Force voice (optional)", placeholder="en-US-GuyNeural")
